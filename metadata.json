@@ -1,0 +1,83 @@
+{
+  "name": "BCRP CSV generator Flex Template",
+  "description": "Template for generating csv reports.",
+  "parameters": [
+    {
+      "helpText": "GCS CVS Location",
+      "isOptional": true,
+      "label": "GCS CVS Location",
+      "name": "csvLocation",
+      "regexes": [".*"]
+    },
+    {
+      "helpText": "BigQuery KMS Key",
+      "isOptional": true,
+      "label": "BigQuery KMS Key",
+      "name": "bqKmsKey",
+      "regexes": [".*"]
+    },
+    {
+      "helpText": "BigQuery Dataset",
+      "isOptional": true,
+      "label": "BigQuery Dataset",
+      "name": "bqDataset",
+      "regexes": [".*"]
+    },
+    {
+      "helpText": "BigQuery Table",
+      "isOptional": true,
+      "label": "BigQuery Table",
+      "name": "bqTable",
+      "regexes": [".*"]
+    },
+    {
+      "helpText": "BigQuery Fields",
+      "isOptional": true,
+      "label": "BigQuery Fields",
+      "name": "bqFields",
+      "regexes": [".*"]
+    },
+    {
+      "helpText": "CSV Name",
+      "isOptional": true,
+      "label": "CSV Report Name",
+      "name": "csvName",
+      "regexes": [".*"]
+    },
+    {
+      "helpText": "CSV Header in Base64",
+      "isOptional": true,
+      "label": "CSV Header in Base64",
+      "name": "csvHeaderB64",
+      "regexes": [".*"]
+    },
+    {
+      "helpText": "CSV Delimiter",
+      "isOptional": true,
+      "label": "CSV Delimiter",
+      "name": "csvDelimiter",
+      "regexes": [".*"]
+    },
+    {
+      "helpText": "Identify record to generate the csv file",
+      "isOptional": true,
+      "label": "Report Date",
+      "name": "reportDate",
+      "regexes": [".*"]
+    },
+    {
+      "helpText": "Number of Shards to split the CSV File",
+      "isOptional": true,
+      "label": "Number of Shards",
+      "name": "numShards",
+      "regexes": ["^[0-9]+"]
+    },
+    {
+      "helpText": "BigQuery Temp Dataset",
+      "isOptional": true,
+      "label": "BigQuery Temp Dataset",
+      "name": "tempDataset",
+      "regexes": [".*"]
+    }
+  ]
+}
