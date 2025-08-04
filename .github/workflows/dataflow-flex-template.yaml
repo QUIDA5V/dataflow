@@ -18,7 +18,7 @@ env:
   BUCKET: yp-bcrp-dataflow
   BUILD_SA: bcrp-cloud-build@data-lake-b4fd.iam.gserviceaccount.com
   LOCATION: us-central1             # <--- reemplaza con tu región
-  PROJECT_ID: your-gcp-project-id  # <--- reemplaza con tu proyecto GCP
+  PROJECT_ID: back-438814  # <--- reemplaza con tu proyecto GCP
   SHORT_SHA: ${{ github.sha }}
 
 jobs:
