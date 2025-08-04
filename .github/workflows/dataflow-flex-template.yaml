@@ -1,0 +1,65 @@
+name: Build and Deploy Dataflow Flex Template
+
+on:
+  push:
+    branches:
+      - main  # ajusta según tu rama principal
+
+env:
+  ENV: dev                # <--- reemplaza con el valor real o usa secrets
+  IMAGE_NAME: dataflow/csv-report-generator
+  ARTIFACT_REPO: yp-bcrp-artifacts
+  BUCKET: yp-bcrp-dataflow
+  BUILD_SA: bcrp-cloud-build@data-lake-b4fd.iam.gserviceaccount.com
+  LOCATION: us-central1             # <--- reemplaza con tu región
+  PROJECT_ID: your-gcp-project-id  # <--- reemplaza con tu proyecto GCP
+  SHORT_SHA: ${{ github.sha }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '21'
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4
+
+      - name: Build with Maven (skip tests)
+        run: mvn clean package -Dmaven.test.skip=true
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Build and Deploy Flex Template
+        run: |
+          set -euo pipefail
+          
+          echo "##### Creating Flex Template Docker image and spec file in GCS"
+          
+          gcloud dataflow flex-template build "gs://${{ env.BUCKET }}/templates/csv-report-generator/${{ env.ENV }}.json" \
+            --image-gcr-path "${{ env.LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}/${{ env.ENV }}:${{ env.SHORT_SHA }}" \
+            --sdk-language "JAVA" \
+            --cloud-build-service-account="projects/${{ env.PROJECT_ID }}/serviceAccounts/${{ env.BUILD_SA }}" \
+            --flex-template-base-image "JAVA21" \
+            --metadata-file "metadata.json" \
+            --jar "target/bcrp-csv-dataflow-1.0-SNAPSHOT.jar" \
+            --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="com.yp.bcrp.BigQueryToCSV" \
+            --env FLEX_TEMPLATE_JAVA_OPTIONS="-Dfile.enconding=UTF-8" \
+            --service-account-email="bcrp-csv-generation-trigger@${{ env.PROJECT_ID }}.iam.gserviceaccount.com" \
+            --disable-public-ips \
+            --gcs-log-dir="gs://${{ env.BUCKET }}/logs/"
