@@ -85,7 +85,7 @@ jobs:
             --jar target/bcrp-csv-dataflow-1.0-SNAPSHOT.jar \
             --env FLEX_TEMPLATE_JAVA_MAIN_CLASS=com.yp.bcrp.BigQueryToCSV \
             --env FLEX_TEMPLATE_JAVA_OPTIONS="-Dfile.encoding=UTF-8" \
-            --service-account-email="bcrp-csv-generation-trigger@${{ env.PROJECT_ID }}.iam.gserviceaccount.com" \
+            --service-account-email="admin-42@${{ env.PROJECT_ID }}.iam.gserviceaccount.com" \
             --cloud-build-service-account="projects/${{ env.PROJECT_ID }}/serviceAccounts/${{ env.BUILD_SA }}" \
             --gcs-log-dir="gs://${{ env.BUCKET }}/logs/" \
             --disable-public-ips
