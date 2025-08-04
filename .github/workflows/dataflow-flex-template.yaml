@@ -88,7 +88,7 @@ jobs:
             --service-account-email="admin-42@${{ env.PROJECT_ID }}.iam.gserviceaccount.com" \
             --cloud-build-service-account="projects/${{ env.PROJECT_ID }}/serviceAccounts/${{ env.BUILD_SA }}" \
             --gcs-log-dir="gs://${{ env.BUCKET }}/logs/" \
-            --disable-public-ips
+            --temp-location="gs://${{ env.BUCKET }}/temp/"
 
       - name: Run Dataflow Flex Template
         run: |
