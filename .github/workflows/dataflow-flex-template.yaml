@@ -87,4 +87,3 @@ jobs:
             --service-account-email="bcrp-csv-generation-trigger@${{ env.PROJECT_ID }}.iam.gserviceaccount.com" \
             --disable-public-ips \
             --gcs-log-dir="gs://${{ env.BUCKET }}/logs/" \
-            --no-source
