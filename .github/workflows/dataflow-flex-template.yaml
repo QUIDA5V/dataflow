@@ -46,6 +46,9 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
+      - name: Validar secreto presente
+        run: echo "¿Secreto presente?: ${{ secrets.GCP_SA_KEY != '' }}"
+
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
