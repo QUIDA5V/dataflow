@@ -46,8 +46,12 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Validar secreto presente
-        run: echo "¿Secreto presente?: ${{ secrets.GCP_SA_KEY != '' }}"
+      - name: Falla si el secreto no está presente
+        run: |
+             if [ -z "${{ secrets.GCP_SA_KEY }}" ]; then
+               echo "El secreto GCP_SA_KEY no está disponible."
+               exit 1
+             fi
 
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
