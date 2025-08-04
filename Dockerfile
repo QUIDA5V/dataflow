@@ -1,4 +1,4 @@
-FROM grc.io/dataflow-templates-base/java21-template-launcher-base:latest
+FROM gcr.io/dataflow-templates-base/java21-template-launcher-base:latest
 
 ENV FLEX_TEMPLATE_JAVA_CLASSPATH=/template/*
 ENV FLEX_TEMPLATE_JAVA_MAIN_CLASS=com.yp.bcrp.BigQueryToCSV
