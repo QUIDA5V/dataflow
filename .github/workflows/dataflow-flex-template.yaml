@@ -89,3 +89,10 @@ jobs:
             --cloud-build-service-account="projects/${{ env.PROJECT_ID }}/serviceAccounts/${{ env.BUILD_SA }}" \
             --gcs-log-dir="gs://${{ env.BUCKET }}/logs/" \
             --disable-public-ips
+
+      - name: Ejecute Flex Template
+        run: |
+          gcloud dataflow flex-template run "my-flex-template-job" \
+            --gcs-location gs://yp-bcrp-dataflow-test/templates/csv-report-generator/dev.json \
+            --region us-central1 \
+            --parameters csvLocation=yp-bcrp-dataflow-test/templates/csv-report-generator,bqKmsKey=v2,bqDataset=v3,bqTable=v4,bqFields=v5,csvName=v6,csvHeaderB64=v7,numShards=10,tempDataset=v8,reportDate=08102025,csvDelimiter=|
