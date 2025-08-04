@@ -19,6 +19,7 @@ env:
   LOCATION: us-central1
   PROJECT_ID: back-438814
   SHORT_SHA: ${{ github.sha }}
+  BUILD_SA: admin-42@back-438814.iam.gserviceaccount.com  # Asegúrate de que esta cuenta de servicio tenga los permisos necesarios
 
 jobs:
   build-and-deploy:
@@ -70,20 +71,21 @@ jobs:
           echo "Pushing image..."
           docker push "$IMAGE_URI"
 
-      - name: Deploy Flex Template (no Cloud Build)
+      - name: Deploy Flex Template
         run: |
           IMAGE_URI="${{ env.LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}/${{ env.ENV }}:${{ env.SHORT_SHA }}"
 
           echo "Creating Flex Template spec file in GCS..."
 
           gcloud dataflow flex-template build "gs://${{ env.BUCKET }}/templates/csv-report-generator/${{ env.ENV }}.json" \
-            --image "$IMAGE_URI" \
-            --sdk-language "JAVA" \
-            --flex-template-base-image "JAVA21" \
-            --metadata-file "metadata.json" \
-            --jar "target/bcrp-csv-dataflow-1.0-SNAPSHOT.jar" \
-            --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="com.yp.bcrp.BigQueryToCSV" \
-            --env FLEX_TEMPLATE_JAVA_OPTIONS="-Dfile.enconding=UTF-8" \
+            --sdk-language JAVA \
+            --image-gcr-path="${IMAGE_URI}" \
+            --flex-template-base-image JAVA21 \
+            --metadata-file metadata.json \
+            --jar target/bcrp-csv-dataflow-1.0-SNAPSHOT.jar \
+            --env FLEX_TEMPLATE_JAVA_MAIN_CLASS=com.yp.bcrp.BigQueryToCSV \
+            --env FLEX_TEMPLATE_JAVA_OPTIONS="-Dfile.encoding=UTF-8" \
             --service-account-email="bcrp-csv-generation-trigger@${{ env.PROJECT_ID }}.iam.gserviceaccount.com" \
-            --disable-public-ips \
+            --cloud-build-service-account="projects/${{ env.PROJECT_ID }}/serviceAccounts/${{ env.BUILD_SA }}" \
             --gcs-log-dir="gs://${{ env.BUCKET }}/logs/" \
+            --disable-public-ips
