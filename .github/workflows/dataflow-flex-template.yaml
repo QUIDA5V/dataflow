@@ -3,22 +3,21 @@ name: Build and Deploy Dataflow Flex Template
 on:
   push:
     branches:
-      - main  # ajusta según tu rama principal
+      - main
   workflow_dispatch:
-    # Solo permitir ejecución manual si estás en main
     inputs:
       environment:
         description: "Environment to deploy to"
         required: false
         default: "dev"
+
 env:
-  ENV: dev                # <--- reemplaza con el valor real o usa secrets
+  ENV: dev
   IMAGE_NAME: dataflow/csv-report-generator
   ARTIFACT_REPO: yp-bcrp-artifacts
   BUCKET: yp-bcrp-dataflow
-  BUILD_SA: admin-42@back-438814.iam.gserviceaccount.com #bcrp-cloud-build@data-lake-b4fd.iam.gserviceaccount.com
-  LOCATION: us-central1             # <--- reemplaza con tu región
-  PROJECT_ID: back-438814  # <--- reemplaza con tu proyecto GCP
+  LOCATION: us-central1
+  PROJECT_ID: back-438814
   SHORT_SHA: ${{ github.sha }}
 
 jobs:
@@ -46,28 +45,40 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Falla si el secreto no está presente
+      - name: Fail if secret not present
         run: |
-             if [ -z "${{ secrets.GCP_SA_KEY }}" ]; then
-               echo "El secreto GCP_SA_KEY no está disponible."
-               exit 1
-             fi
+          if [ -z "${{ secrets.GCP_SA_KEY }}" ]; then
+            echo "GCP_SA_KEY not available"
+            exit 1
+          fi
 
-      - name: Set up gcloud
+      - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ env.PROJECT_ID }}
 
-      - name: Build and Deploy Flex Template
+      - name: Build and push Docker image
         run: |
-          set -euo pipefail
+          IMAGE_URI="${{ env.LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}/${{ env.ENV }}:${{ env.SHORT_SHA }}"
           
-          echo "##### Creating Flex Template Docker image and spec file in GCS"
-          
+          echo "Building Docker image..."
+          docker build -t "$IMAGE_URI" .
+
+          echo "Authenticating Docker to Artifact Registry..."
+          gcloud auth configure-docker "${{ env.LOCATION }}-docker.pkg.dev" --quiet
+
+          echo "Pushing image..."
+          docker push "$IMAGE_URI"
+
+      - name: Deploy Flex Template (no Cloud Build)
+        run: |
+          IMAGE_URI="${{ env.LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}/${{ env.ENV }}:${{ env.SHORT_SHA }}"
+
+          echo "Creating Flex Template spec file in GCS..."
+
           gcloud dataflow flex-template build "gs://${{ env.BUCKET }}/templates/csv-report-generator/${{ env.ENV }}.json" \
-            --image-gcr-path "${{ env.LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}/${{ env.ENV }}:${{ env.SHORT_SHA }}" \
+            --image "$IMAGE_URI" \
             --sdk-language "JAVA" \
-            --cloud-build-service-account="projects/${{ env.PROJECT_ID }}/serviceAccounts/${{ env.BUILD_SA }}" \
             --flex-template-base-image "JAVA21" \
             --metadata-file "metadata.json" \
             --jar "target/bcrp-csv-dataflow-1.0-SNAPSHOT.jar" \
@@ -75,4 +86,5 @@ jobs:
             --env FLEX_TEMPLATE_JAVA_OPTIONS="-Dfile.enconding=UTF-8" \
             --service-account-email="bcrp-csv-generation-trigger@${{ env.PROJECT_ID }}.iam.gserviceaccount.com" \
             --disable-public-ips \
-            --gcs-log-dir="gs://${{ env.BUCKET }}/logs/"
+            --gcs-log-dir="gs://${{ env.BUCKET }}/logs/" \
+            --no-source
