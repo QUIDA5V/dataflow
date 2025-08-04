@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - main  # ajusta según tu rama principal
-
+  workflow_dispatch:
+    # Solo permitir ejecución manual si estás en main
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: false
+        default: "dev"
 env:
   ENV: dev                # <--- reemplaza con el valor real o usa secrets
   IMAGE_NAME: dataflow/csv-report-generator
