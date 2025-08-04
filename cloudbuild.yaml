@@ -1,0 +1,17 @@
+steps:
+-  name: maven:3-amazoncorreto-21
+   entrypoint: mvn
+   args: ["clean", "package", "-Dmaven.test.skip=true"]
+-  name: google/cloud-sdk:527.0.0-slim
+   args: [ "./scripts/build_template.sh"]
+   env:
+     - _ENV=$_ENV
+     - _IMAGE_NAME=dataflow/csv-report-generator
+     - _ARTIFACT_REPO=yp-bcrp-artifacts
+     - PROJECT_ID=$PROJECT_ID
+     - LOCATION=$LOCATION
+     - SHORT_SHA=$SHORT_SHA
+     - _BUCKET=yp-bcrp-dataflow
+     - _BUILD_SA=bcrp-cloud-build@data-lake-b4fd.iam.gserviceaccount.com
+options:
+  logging: CLOUD_LOGGING_ONLY
