@@ -95,4 +95,4 @@ jobs:
           gcloud dataflow flex-template run "test-flex-template-job" \
             --template-file-gcs-location=gs://yp-bcrp-dataflow-test/templates/csv-report-generator/dev.json \
             --region=us-central1 \
-            --parameters="csvLocation=gs://yp-bcrp-dataflow-test/templates/csv-report-generator,bqKmsKey=v2,bqDataset=v3,bqTable=v4,bqFields=v5,csvName=test,csvHeaderB64=v7,numShards=10,tempDataset=v8,reportDate=08102025,csvDelimiter=\"|\""
+            --parameters="csvLocation=gs://yp-bcrp-dataflow-test/templates/csv-report-generator/,bqKmsKey=v2,bqDataset=v3,bqTable=v4,bqFields=v5,csvName=test,csvHeaderB64=v7,numShards=10,tempDataset=v8,reportDate=08102025,csvDelimiter=\"|\""
