@@ -14,8 +14,8 @@ on:
 env:
   ENV: dev
   IMAGE_NAME: dataflow/csv-report-generator
-  ARTIFACT_REPO: yp-bcrp-artifacts
-  BUCKET: yp-bcrp-dataflow-test
+  ARTIFACT_REPO: yp-bcrp-artifacts2
+  BUCKET: yp-bcrp-dataflow-test2
   LOCATION: us-east1
   PROJECT_ID: back-438814
   SHORT_SHA: ${{ github.sha }}
