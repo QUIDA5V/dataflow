@@ -5,13 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.yp</groupId>
-    <artifactId>bcrp-csv-dataflow</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>bq-to-csv-dataflow</artifactId>
+    <version>1.0.0</version>
+    <name>bq-to-csv</name>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <google-cloud-bom.version>26.9.0</google-cloud-bom.version>
+        <google-cloud-storage.version>2.8.2</google-cloud-storage.version>
+        <commons-io.version>2.16.1</commons-io.version>
+        <commons-csv.version>1.10.0</commons-csv.version>
+        <logback.version>1.5.8</logback.version>
+        <maven-plugins-main-class>com.yp.bcrp.BigQueryToCSV</maven-plugins-main-class>
     </properties>
 
     <dependencies>
@@ -29,6 +35,41 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib</classpathPrefix>
+                            <mainClass>com.yp.bcrp.BigQueryToCSV</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>${maven-plugins-main-class}</mainClass>
+                </configuration>
+            </plugin>
             <!-- Plugin to create executable JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
