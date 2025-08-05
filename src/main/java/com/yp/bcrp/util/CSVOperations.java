@@ -74,7 +74,7 @@ public class CSVOperations {
         return FileBasedSink.convertToFileResourceIfPossible(path);
     }
     public static @UnknownKeyFor @NotNull @Initialized ResourceId tempPathResource(String location){
-        String path = "%s/%temp".formatted(location);
+        String path = "%s/temp".formatted(location);
         return FileBasedSink.convertToFileResourceIfPossible(path);
     }
 
