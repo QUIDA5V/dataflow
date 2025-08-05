@@ -36,7 +36,8 @@ public class BigQueryToCSV {
                 .withNumShards(Optional.ofNullable(options.getNumShards()).orElse(10))
                 .withCompression(compression));
 
-        pipeline.run();
+        //pipeline.run();
+        pipeline.run().waitUntilFinish();
         }catch(Exception e){
             e.printStackTrace();
         }
