@@ -16,7 +16,7 @@ env:
   IMAGE_NAME: dataflow/csv-report-generator
   ARTIFACT_REPO: yp-bcrp-artifacts
   BUCKET: yp-bcrp-dataflow-test
-  LOCATION: us-central1
+  LOCATION: us-east1
   PROJECT_ID: back-438814
   SHORT_SHA: ${{ github.sha }}
   BUILD_SA: admin-42@back-438814.iam.gserviceaccount.com  # Asegúrate de que esta cuenta de servicio tenga los permisos necesarios
