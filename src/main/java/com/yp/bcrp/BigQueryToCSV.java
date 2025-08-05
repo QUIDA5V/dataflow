@@ -16,7 +16,7 @@ import static org.apache.beam.sdk.io.TextIO.write;
 public class BigQueryToCSV {
 
     public static void main(String[] args) {
-
+        System.out.println("*********");
         Compression compression = Compression.GZIP;
         BigQueryToCSVOptions options = PipelineOptionsFactory.fromArgs(args)
                 .withValidation()
