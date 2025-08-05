@@ -82,7 +82,7 @@ jobs:
             --image-gcr-path="${IMAGE_URI}" \
             --flex-template-base-image JAVA21 \
             --metadata-file metadata.json \
-            --jar target/bcrp-csv-dataflow-1.0-SNAPSHOT.jar \
+            --jar target/bq-to-csv-dataflow-bundled-1.0.0.jar \
             --env FLEX_TEMPLATE_JAVA_MAIN_CLASS=com.yp.bcrp.BigQueryToCSV \
             --env FLEX_TEMPLATE_JAVA_OPTIONS="-Dfile.encoding=UTF-8" \
             --service-account-email="admin-42@${{ env.PROJECT_ID }}.iam.gserviceaccount.com" \
