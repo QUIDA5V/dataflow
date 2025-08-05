@@ -41,6 +41,7 @@ public class CSVOperations {
 
     public static @NotNull FileBasedSink.FilenamePolicy shardsFilenamePolicy(String name, String location, LocalDate reportDate, Compression compression){
         String directoryAndSuffix = reportDate.format(DDMMYYYY_FORMATTER);
+        System.out.println("*********4");
         return new FilenamePolicy() {
             @Override
             public @UnknownKeyFor @NonNull @Initialized ResourceId windowedFilename(
